@@ -2,26 +2,27 @@
 
 namespace App\Imports;
 
+use App\User;
+use Maatwebsite\Excel\Row;
+use Illuminate\Support\Str;
+use App\Rules\StrongPassword;
+use Illuminate\Validation\Rule;
 use App\Models\OrganizationType;
 use App\Models\OrganizationRoleType;
-use App\Rules\StrongPassword;
-use App\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Row;
-use Maatwebsite\Excel\Concerns\OnEachRow;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class UsersImport implements WithBatchInserts, WithChunkReading, WithValidation, WithHeadingRow, SkipsOnFailure, SkipsOnError, OnEachRow
 {
@@ -73,10 +74,12 @@ class UsersImport implements WithBatchInserts, WithChunkReading, WithValidation,
 
     public function onRow(Row $row)
     {
+        $orgId = Request::segment(4);
         $this->importedCount++; // increment the inserted rows count
         $rowIndex = $row->getIndex();
         $row      = $row->toArray();
-        $roleTypeId = $row['role'] ? OrganizationRoleType::where('display_name', $row['role'])->first()->id : 2;
+        $orgRole = ['display_name' => $row['role'], 'organization_id' => $orgId];
+        $roleTypeId = OrganizationRoleType::where($orgRole)->first()->id;
         
         $user = User::firstOrCreate([
             'first_name' => $row['first_name'],
@@ -92,7 +95,7 @@ class UsersImport implements WithBatchInserts, WithChunkReading, WithValidation,
         ]);
     
         $user->publisherOrg()->create([
-            'organization_id' => 1,
+            'organization_id' => $orgId,
             'organization_role_type_id' => $roleTypeId
         ]);
     }
