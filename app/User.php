@@ -281,6 +281,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the teacher projects for the user
+     */
+    public function teacherProjects()
+    {
+        return $this->belongsToMany('App\Models\Project', 'user_teacher_project')->withTimestamps();
+    }
+
+    /**
+     * Get the student projects for the user
+     */
+    public function studentProjects()
+    {
+        return $this->belongsToMany('App\Models\Project', 'user_student_project')->withTimestamps();
+    }
+
+    /**
      * Check if user has the specified permission in the provided organization
      *
      * @param $permission
