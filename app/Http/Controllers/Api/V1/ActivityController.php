@@ -288,13 +288,13 @@ class ActivityController extends Controller
             $is_updated = $this->activityRepository->update($attributes, $activity->id);
 
             if ($is_updated) {
-                if (isset($validated['subject_id']) && !empty($validated['subject_id'])) {
+                if (isset($validated['subject_id']) && !empty($validated['subject_id']) && !in_array(null, $validated['subject_id'], true)) {
                     $activity->subjects()->sync($validated['subject_id']);
                 }
-                if (isset($validated['education_level_id']) && !empty($validated['education_level_id'])) {
+                if (isset($validated['education_level_id']) && !empty($validated['education_level_id']) && !in_array(null, $validated['education_level_id'], true)) {
                     $activity->educationLevels()->sync($validated['education_level_id']);
                 }
-                if (isset($validated['author_tag_id']) && !empty($validated['author_tag_id'])) {
+                if (isset($validated['author_tag_id']) && !empty($validated['author_tag_id']) && !in_array(null, $validated['author_tag_id'], true)) {
                     $activity->authorTags()->sync($validated['author_tag_id']);
                 }
 
