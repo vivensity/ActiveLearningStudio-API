@@ -75,7 +75,8 @@ class UpdateSemanticsForColumn extends Seeder
                       "H5P.TwitterUserFeed 1.0",
                       "H5P.Video 1.5",
                       "H5P.FindTheWords 1.4",
-                      "H5P.DocumentsUpload 1.0"
+                      "H5P.DocumentsUpload 1.0",
+                      "H5P.StarRating 1.0",
                     ]
                   },
                   {
