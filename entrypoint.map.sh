@@ -7,7 +7,7 @@ if [[ ! -e /var/www/html/storage/oauth-private.key || ! -e /var/www/html/storage
 php /var/www/html/artisan migrate --force
 
 
-git clone -b master https://github.com/InfobaseCloud/H5P.Distribution.git /tmp/h5p-dist
+git clone -b viensity-prd https://github.com/vivensity/H5P.Distribution.git /tmp/h5p-dist
 
 cp -rf /tmp/h5p-dist/* /var/www/html/storage/app/public/h5p/
 chmod 777 -R /var/www/html/storage &
